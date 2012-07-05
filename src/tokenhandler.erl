@@ -28,7 +28,7 @@
 
 
 create_token(AgentId) ->
-    gen_server:call(?MODULE, {create_token, AgentID}).
+    gen_server:call(?MODULE, {create_token, AgentId}).
 
 %%--------------------------------------------------------------------
 %% @doc
@@ -75,10 +75,10 @@ init([]) ->
 handle_call({create_token, AgentId}, _From, State) ->
     Agent = boss_db:find(AgentId),
 
-    RawToken = crypto:Agent:email() ++ Agent:id() ++ integer_to_list(
+    RawToken = Agent:email() ++ Agent:id() ++ integer_to_list(
 					     calendar:datetime_to_gregorian_seconds(
 					       calendar:universal_time_to_local_time(
-						 calendar:universal_time())) + 86400),
+						 calendar:universal_time()))) + 86400,
     Token = mochihex:to_hex(crypto:sha(RawToken)),
     error_logger:info_msg("Agent ~p got token ~p from ~p assigned and saved~n", [Agent, Token, RawToken]),
     NewAgent = Agent:set([
@@ -88,7 +88,7 @@ handle_call({create_token, AgentId}, _From, State) ->
 					   calendar:universal_time())) + 86400}
 			 ]),
     Result = case NewAgent:save() of
-		 {ok, UpdatedAgent} ->
+		 {ok, _UpdatedAgent} ->
 		     {ok, Token};
 		 {error, Reason} ->
 		     {error, Reason};
