@@ -1,0 +1,11 @@
+%% This is the application resource file (.app file) for the,
+%% application.
+{application, tokenhandler,
+  [{description, "Your Desc HERE"},
+   {vsn, "0.0.1"},
+   {modules, [tokenhandler_app,
+              tokenhandler_sup]},
+   {registered,[tokenhandler_sup]},
+   {applications, [kernel, stdlib]},
+   {mod, {tokenhandler_app,[]}},
+   {start_phases, []}]}.
